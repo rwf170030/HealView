@@ -3,6 +3,7 @@ import numpy
 import pydicom
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 
 import os
@@ -12,10 +13,12 @@ onlyfiles = [f for f in os.listdir(mypath) if os.path.isfile(os.path.join(mypath
 onlyfiles.sort()
 model3DArray = pydicom.dcmread(mypath + '/' + '1-119.dcm').pixel_array
 
-fig = plt.figure()
-ax = fig.subplots()
+offset = mcolors.TwoSlopeNorm(vmin = model3DArray.min(),vcenter = 0, vmax = model3DArray.max())
 
-plotFigure = ax.imshow(model3DArray)
+fig = plt.figure()
+plottedSubplot = fig.subplots()
+plotFigure = plottedSubplot.imshow(model3DArray, cmap = plt.get_cmap('Greys'))
+
 
 ax_slide = plt.axes([0.9,0.1,0.05,0.8]) #xpos,ypos,width,height
 
@@ -23,8 +26,13 @@ s_factor = matplotlib.widgets.Slider(ax_slide, 'Cutoff Point', valmin = model3DA
 
 def plotUpdate(val):
     print(val)
-    model3DMask = numpy.ma.masked_less_equal(model3DArray, s_factor.val, copy=True)
-    plt.imshow(model3DMask)
+    model3DMask = numpy.ma.masked_less(model3DArray, int(val))
+    print(model3DMask)
+    #If imshow is repeatedly plotted it overlays it's data which is fine if all points are filled, but not fine if using a masked array
+    plotFigure.set_data(model3DMask)
+    
+
+
     fig.canvas.draw()
 
 
