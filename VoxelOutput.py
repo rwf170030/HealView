@@ -3,17 +3,8 @@ import vtk
 import pydicom
 import os
 import pyvista as pv
-from vtk.util import numpy_support
 from vtkmodules.vtkCommonColor import vtkNamedColors
-from vtkmodules.vtkRenderingCore import (
-    vtkActor,
-    vtkPolyDataMapper,
-    vtkRenderWindow,
-    vtkRenderWindowInteractor,
-    vtkRenderer
-)
 # from vtk.numpy_interface import dataset_adapter as dsa
-colors = vtkNamedColors()
 
 
 mypath = '../../Desktop/DICOM/10-26-2014-NA-PETCT SKULL-MIDTHIGH-30467/2.000000-CTAC-47844'
