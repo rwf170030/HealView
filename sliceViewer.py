@@ -2,8 +2,6 @@ import matplotlib
 import numpy
 import pydicom
 import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-import sys
 import os
 
 def sliceViewer(path):
@@ -20,9 +18,6 @@ def sliceViewer(path):
     Final3DArray = numpy.array(model3DArray)
     print(Final3DArray.shape[0])#z,_,_(x and y uknown order)
 
-
-    offset = mcolors.TwoSlopeNorm(vmin = Final3DArray.min(),vcenter = 0, vmax = Final3DArray.max())
-
     fig = plt.figure()
     plottedSubplot = fig.subplots()
     plotFigure = plottedSubplot.imshow(Final3DArray[0], cmap = plt.get_cmap('Greys'))
@@ -36,9 +31,9 @@ def sliceViewer(path):
 
     def plotUpdate(val):
         print(val)
-        model3DMask = numpy.ma.masked_less(Final3DArray[s_factor2.val], int(s_factor.val))
+        maskedDisplayLayer = numpy.ma.masked_less(Final3DArray[s_factor2.val], int(s_factor.val))
         #If imshow is repeatedly plotted it overlays it's data which is fine if all points are filled, but not fine if using a masked array
-        plotFigure.set_data(model3DMask)
+        plotFigure.set_data(maskedDisplayLayer)
         
 
 

@@ -21,18 +21,29 @@ def is_number(text):
     
     except:
         return False
+    
+def is_int(text):
+    try:
+        int(text)
+        return True
+    except:
+        return False
 
 def marchingCubeRenderOption(path):
-    mCRValues = ['Cutoff Values','Caps']
+    #mCRValues = ['Number of Cutoff Values','Cutoff Values','Caps']
     mCRDict = {}
-    validator = Validator.from_callable(is_number, error_message='This input contains non-numeric characters')
-    for n in mCRValues:
-        if n == 'Cutoff Values':
-            userInput = prompt("Please input the options for the Marching Cube Render " + n + ': ', validator=validator)
-        else:
-            userInput = prompt("Please input the options for the Marching Cube Render " + n + ': ',)
-        mCRDict[n] = userInput
-    marchCubeRender(path,float(mCRDict['Cutoff Values']),mCRDict['Caps'] == 'True' or mCRDict['Caps'] == '1')
+    intValidator = Validator.from_callable(is_int, error_message='This input is not an integer')
+    numValidator = Validator.from_callable(is_number, error_message='This input contains non-numeric characters')
+    numCutoffValues = prompt("Please input the number of cutoff values you wish to have: ", validator=intValidator)
+    cutoffValues = []
+    
+    while len(cutoffValues) < int(numCutoffValues):
+        userInput = prompt("Please input a cutoff value you wish to use: ", validator=numValidator)
+        cutoffValues.append(float(userInput))
+    
+    capsBool = prompt("Should the model to be capped on all sides: ")
+    
+    marchCubeRender(path,cutoffValues,capsBool.lower() in ['true', '1', 't', 'y', 'yes'])
 
 def STLExportOption(path):
     prompt("Please input the options for the STL Export: ")

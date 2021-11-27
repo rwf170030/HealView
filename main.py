@@ -8,6 +8,8 @@ from userOptions import userOptionsMain
 try:
     if os.path.isdir(sys.argv[1]):
         Path = sys.argv[1]
+    else: 
+        Path = getDICOMPath()
 except:
     Path = getDICOMPath()
     
