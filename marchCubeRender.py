@@ -1,14 +1,18 @@
 import numpy
 import vtk
 import pydicom
-import os
 import pyvista as pv
 from filenameListGen import filelistGen
+
+#X,Y,Z is based on horizontal axis of slice viewer, vertical axis of slice viewer, and layer slider in slice viewer respectively
 
 def marchCubeRender(path, cutoffValueList, caps):
     onlyfiles = filelistGen(path)
     model3DArray = []#Calling this initially as an empty list and then converting it to a numpy array at the end is the cleanest method of adding all necessary values
 
+    scale = [pydicom.dcmread(path + '/' + onlyfiles[0]).SliceThickness] #Z scaling
+    scale.extend(pydicom.dcmread(path + '/' + onlyfiles[0]).PixelSpacing) #Order is row then column for matrix. should be y then x scaling. 
+    
     for n in onlyfiles:
         model3DArray.append(pydicom.dcmread(path + '/' + n).pixel_array)
         #If imshow is repeatedly plotted it overlays it's data which is fine if all points are filled, but not fine if using a masked array
@@ -47,7 +51,8 @@ def marchCubeRender(path, cutoffValueList, caps):
     polydata = mc.GetOutput()
     # points = dsa.WrapDataObject(polydata).Points
     print(polydata)
-    mesh = pv.PolyData(polydata)
+    mesh = pv.PolyData(polydata) #Convert marching cube update output to polydata
+    mesh.scale(scale) #Scale by z,y,x
     print(mesh)
     p=pv.Plotter()
     actor = p.add_mesh(mesh, color='red')

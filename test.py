@@ -5,3 +5,7 @@ path = '../../Desktop/DICOM/10-26-2014-NA-PETCT SKULL-MIDTHIGH-30467/2.000000-CT
 filenames = filelistGen(path)
 print(pydicom.dcmread(path + '/' + filenames[0]).PixelSpacing)
 print(pydicom.dcmread(path + '/' + filenames[27]).SliceThickness)
+
+scale = [pydicom.dcmread(path + '/' + filenames[0]).SliceThickness]
+scale.extend(pydicom.dcmread(path + '/' + filenames[0]).PixelSpacing)
+print(scale)

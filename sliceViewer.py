@@ -2,13 +2,14 @@ import matplotlib
 import numpy
 import pydicom
 import matplotlib.pyplot as plt
-import os
+from filenameListGen import filelistGen
 
 def sliceViewer(path):
-    onlyfiles = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-    onlyfiles.sort()
+    onlyfiles = filelistGen(path)
     model3DArray = []#Calling this initially as an empty list and then converting it to a numpy array at the end is the cleanest method of adding all necessary values
-    print(model3DArray)
+    
+    scale=pydicom.dcmread(path + '/' + onlyfiles[0]).PixelSpacing #Order is row then column for matrix. should be y then x scaling
+    
     for n in onlyfiles:
         model3DArray.append(pydicom.dcmread(path + '/' + n).pixel_array)
         #if n == '1-120.dcm':
@@ -20,7 +21,7 @@ def sliceViewer(path):
 
     fig = plt.figure()
     plottedSubplot = fig.subplots()
-    plotFigure = plottedSubplot.imshow(Final3DArray[0], cmap = plt.get_cmap('Greys'))
+    plotFigure = plottedSubplot.imshow(Final3DArray[0], cmap = plt.get_cmap('Greys'), aspect = (scale[0]/scale[1]))
 
 
     ax_slide = plt.axes([0.875,0.1,0.05,0.8]) #xpos,ypos,width,height
